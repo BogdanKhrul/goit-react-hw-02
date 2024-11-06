@@ -1,12 +1,14 @@
-const Options = ({ feedbackCount, positivePercenttage }) => {
+function Options({ onUpdateFeedback, onResetFeedback, resetDisabled }) {
     return (
         <div>
-            <p>Good: {feedbackCount.good}</p>
-            <p>Neutral: {feedbackCount.neutral}</p>
-            <p>Bad: {feedbackCount.bad}</p>
-            <p>Positive: {positivePercenttage}%</p>
+            <button onClick={() => onUpdateFeedback('good')}>Good</button>
+            <button onClick={() => onUpdateFeedback('neutral')}>Neutral</button>
+            <button onClick={() => onUpdateFeedback('bad')}>Bad</button>
+            <button onClick={onResetFeedback} style={{ display: resetDisabled ? 'none' : '' }}>
+                Reset
+            </button>
         </div>
     );
-};
+}
 
 export default Options;

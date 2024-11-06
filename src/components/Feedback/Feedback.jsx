@@ -1,12 +1,13 @@
-const Feedback = ({ onFeedback, totalFeedback, onReset }) => {
+function Feedback({ feedback: { good, neutral, bad }, totalFeedbackCounts, positiveCounter }) {
     return (
         <div>
-            <button onClick={() => onFeedback('good')}>Good</button>
-            <button onClick={() => onFeedback('neutral')}>Neutral</button>
-            <button onClick={() => onFeedback('bad')}>Bad</button>
-            {totalFeedback > 0 && <button onClick={onReset}>Reset</button>}
+            <p>Good: {good}</p>
+            <p>Neutral: {neutral}</p>
+            <p>Bad: {bad}</p>
+            <p>Total: {totalFeedbackCounts}</p>
+            <p>Positive: {positiveCounter}%</p>
         </div>
     );
-};
+}
 
 export default Feedback;

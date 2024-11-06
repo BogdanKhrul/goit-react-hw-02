@@ -5,48 +5,65 @@ import Feedback from '../Feedback/Feedback';
 import Options from '../Options/Options';
 import Notification from '../Notification/Notification';
 
-const App = () => {
-    const savedFeedbacks = JSON.parse(window.localStorage.getItem('feedbacks'));
-
-    const [feedbackCount, setFeedbackCount] = useState(savedFeedbacks || { good: 0, neutral: 0, bad: 0 });
-
-    useEffect(() => {
-        window.localStorage.setItem('feedbacks', JSON.stringify(feedbackCount));
-    }, [feedbackCount]);
-
-    const handleFeedback = type => {
-        setFeedbackCount(prevState => ({
-            ...prevState,
-            [type]: prevState[type] + 1,
-        }));
+function App() {
+    const feedbackCounts = {
+        good: 0,
+        neutral: 0,
+        bad: 0,
     };
 
-    const resetFeedback = () => {
-        setFeedbackCount({
-            good: 0,
-            neutral: 0,
-            bad: 0,
+    const [feedback, setFeedback] = useState(() => {
+        const savedFeedback = localStorage.getItem('feedback');
+
+        if (savedFeedback !== null) {
+            return JSON.parse(savedFeedback);
+        }
+
+        return feedbackCounts;
+    });
+
+    useEffect(() => {
+        localStorage.setItem('feedback', JSON.stringify(feedback));
+    }, [feedback]);
+
+    const updateFeedback = feedbackType => {
+        setFeedback({
+            ...feedback,
+            [feedbackType]: feedback[feedbackType] + 1,
         });
     };
 
-    const totalFeedback = feedbackCount.good + feedbackCount.neutral + feedbackCount.bad;
-    const positivePercenttage = totalFeedback > 0 ? Math.round((feedbackCount.good / totalFeedback) * 100) : 0;
+    const resetFeedback = () => {
+        setFeedback(feedbackCounts);
+    };
+
+    const totalFeedback = feedback.good + feedback.neutral + feedback.bad;
+
+    const hasFeedback = totalFeedback > 0;
+    const resetDisabled = totalFeedback < 1;
+    const positiveFeedbackPercentage = totalFeedback ? Math.round((feedback.good / totalFeedback) * 100) : 0;
 
     return (
-        <div>
-            <Description />
-            <Feedback onFeedback={handleFeedback} totalFeedback={totalFeedback} onReset={resetFeedback} />
-            {totalFeedback === 0 ? (
-                <Notification />
-            ) : (
+        <>
+            <div>
+                <Description />
                 <Options
-                    feedbackCount={feedbackCount}
-                    totalFeedback={totalFeedback}
-                    positivePercenttage={positivePercenttage}
+                    onUpdateFeedback={updateFeedback}
+                    onResetFeedback={resetFeedback}
+                    resetDisabled={resetDisabled}
                 />
-            )}
-        </div>
+                {!hasFeedback ? (
+                    <Notification />
+                ) : (
+                    <Feedback
+                        feedback={feedback}
+                        totalFeedbackCounts={totalFeedback}
+                        positiveCounter={positiveFeedbackPercentage}
+                    />
+                )}
+            </div>
+        </>
     );
-};
+}
 
 export default App;

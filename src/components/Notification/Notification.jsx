@@ -1,9 +1,5 @@
-const Notification = () => {  
-    return (  
-        <div>  
-            <p>No feedback yet</p>  
-        </div>  
-    );  
-};  
+function Notification() {
+    return <p>Not feedback jet</p>;
+}
 
-export default Notification;  
+export default Notification;
